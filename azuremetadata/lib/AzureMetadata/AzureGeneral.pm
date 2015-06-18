@@ -33,11 +33,11 @@ sub get_instance_name {
     return $name;
 }
 
-sub get_instance_incarnation_tag {
+sub get_incarnation_instance_id {
     my $xml = shift;
-    my @instance = $xml->getElementsByTagName('Incarnation');
-    my $tag = $instance[0]->getAttribute('instance');
-    return $tag;
+    my @incarnation = $xml->getElementsByTagName('Incarnation');
+    my $id = $incarnation[0]->getAttribute('instance');
+    return $id;
 }
 
 sub get_instance_id {

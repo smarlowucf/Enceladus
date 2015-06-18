@@ -54,11 +54,11 @@ sub main {
     } elsif ($options{instance_id}) {
         my $id = AzureGeneral::get_instance_id();
         $data{instance_id} = $id;
-    } elsif ($options{instance_tag}) {
-        my $tag = AzureGeneral::get_instance_incarnation_tag(
+    } elsif ($options{incarnation_id}) {
+        my $id = AzureGeneral::get_incarnation_instance_id(
             AzureNetwork::import_config()
         );
-        $data{instance_tag} = $tag;
+        $data{incarnation_instance_id} = $id;
     } elsif ($options{internal_ip}) {
         # Private Internal IP discovery
         my $ip = AzureNetwork::read_internal_ip(
@@ -76,7 +76,7 @@ sub parse_options {
     my $device;
     my $external_ip;
     my $instance_name;
-    my $instance_tag;
+    my $incarnation_id;
     my $instance_id;
     my $internal_ip;
     my $tag;
@@ -87,8 +87,8 @@ sub parse_options {
         "device|d=s"      => \$device,
         "external-ip|e"   => \$external_ip,
         "instance-name|n" => \$instance_name,
-        "instance-tag|g"  => \$instance_tag,
-        "instance-id|d"   => \$instance_id,
+        "incarnation-id|I"=> \$incarnation_id,
+        "instance-id|D"   => \$instance_id,
         "internal-ip|i"   => \$internal_ip,
         "tag|t"           => \$tag,
         "xml|x"           => \$xmlOut
@@ -100,7 +100,7 @@ sub parse_options {
     $options{instance_name}    = $instance_name;
     $options{internal_ip}      = $internal_ip;
     $options{instance_id}      = $instance_id;
-    $options{instance_tag}     = $instance_tag;
+    $options{incarnation_id}   = $incarnation_id;
     $options{tag}              = $tag;
     $options{xmlOut}           = $xmlOut;
     if ( $result != 1 ) {
@@ -111,7 +111,7 @@ sub parse_options {
     if ((! $options{cloudServiceName}) &&
         (! $options{external_ip}) &&
         (! $options{instance_name})  &&
-        (! $options{instance_tag}) &&
+        (! $options{incarnation_id}) &&
         (! $options{instance_id}) &&
         (! $options{internal_ip}) &&
         (! $options{tag})
@@ -144,11 +144,11 @@ sub usage {
     print "    --instance-name | -n\n";
     print "      print the instance's name\n";
     print "\n";
-    print "    --instance-tag | -g\n";
-    print "      print the instance's unique tag name\n";
+    print "    --incarnation-id | -I\n";
+    print "      print the instance's unique incarnation tag\n";
     print "\n";
-    print "    --instance-id | -d\n";
-    print "      print the instance's unique id\n";
+    print "    --instance-id | -D\n";
+    print "      print the instance's unique SMBIOS UUID\n";
     print "\n";
     print "    --internal-ip | -i\n";
     print "      print private internal IPv4 address\n";
