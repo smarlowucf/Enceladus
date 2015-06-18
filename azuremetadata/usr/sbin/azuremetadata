@@ -14,6 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+# use lib '../../lib';
 
 use strict;
 use warnings;
@@ -49,6 +51,14 @@ sub main {
             AzureNetwork::import_config()
         );
         $data{instance_name} = $name;
+    } elsif ($options{instance_id}) {
+        my $id = AzureGeneral::get_instance_id();
+        $data{instance_id} = $id;
+    } elsif ($options{instance_tag}) {
+        my $tag = AzureGeneral::get_instance_incarnation_tag(
+            AzureNetwork::import_config()
+        );
+        $data{instance_tag} = $tag;
     } elsif ($options{internal_ip}) {
         # Private Internal IP discovery
         my $ip = AzureNetwork::read_internal_ip(
@@ -66,6 +76,8 @@ sub parse_options {
     my $device;
     my $external_ip;
     my $instance_name;
+    my $instance_tag;
+    my $instance_id;
     my $internal_ip;
     my $tag;
     my $xmlOut;
@@ -75,6 +87,8 @@ sub parse_options {
         "device|d=s"      => \$device,
         "external-ip|e"   => \$external_ip,
         "instance-name|n" => \$instance_name,
+        "instance-tag|g"  => \$instance_tag,
+        "instance-id|d"   => \$instance_id,
         "internal-ip|i"   => \$internal_ip,
         "tag|t"           => \$tag,
         "xml|x"           => \$xmlOut
@@ -85,6 +99,8 @@ sub parse_options {
     $options{external_ip}      = $external_ip;
     $options{instance_name}    = $instance_name;
     $options{internal_ip}      = $internal_ip;
+    $options{instance_id}      = $instance_id;
+    $options{instance_tag}     = $instance_tag;
     $options{tag}              = $tag;
     $options{xmlOut}           = $xmlOut;
     if ( $result != 1 ) {
@@ -95,11 +111,13 @@ sub parse_options {
     if ((! $options{cloudServiceName}) &&
         (! $options{external_ip}) &&
         (! $options{instance_name})  &&
+        (! $options{instance_tag}) &&
+        (! $options{instance_id}) &&
         (! $options{internal_ip}) &&
         (! $options{tag})
     ) {
         usage();
-        print STDERR "Please provide a query option.";
+        print STDERR "Please provide a query option.\n";
         exit 1;
     }
     if (! $options{device}) {
@@ -124,7 +142,13 @@ sub usage {
     print "      print public external IPv4 address\n";
     print "\n";
     print "    --instance-name | -n\n";
-    print "      print the instance's unique name\n";
+    print "      print the instance's name\n";
+    print "\n";
+    print "    --instance-tag | -g\n";
+    print "      print the instance's unique tag name\n";
+    print "\n";
+    print "    --instance-id | -d\n";
+    print "      print the instance's unique id\n";
     print "\n";
     print "    --internal-ip | -i\n";
     print "      print private internal IPv4 address\n";
