@@ -696,15 +696,25 @@ class EC2ImageUploader(EC2Utils):
 
         root_device_name = self._determine_root_device()
         if self.image_virt_type == 'hvm':
-            ami = self._connect().register_image(
-                Name=self.image_name,
-                Description=self.image_description,
-                Architecture=self.image_arch,
-                RootDeviceName=root_device_name,
-                BlockDeviceMappings=block_device_map,
-                VirtualizationType=self.image_virt_type,
-                SriovNetSupport=self.sriov_type
-            )
+            if self.sriov_type:
+                ami = self._connect().register_image(
+                    Name=self.image_name,
+                    Description=self.image_description,
+                    Architecture=self.image_arch,
+                    RootDeviceName=root_device_name,
+                    BlockDeviceMappings=block_device_map,
+                    VirtualizationType=self.image_virt_type,
+                    SriovNetSupport=self.sriov_type
+                )
+            else:
+                ami = self._connect().register_image(
+                    Name=self.image_name,
+                    Description=self.image_description,
+                    Architecture=self.image_arch,
+                    RootDeviceName=root_device_name,
+                    BlockDeviceMappings=block_device_map,
+                    VirtualizationType=self.image_virt_type
+                )
         else:
             ami = self._connect().register_image(
                 Name=self.image_name,
