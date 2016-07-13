@@ -78,6 +78,15 @@ def clean_hosts_file(domain_name):
 
 
 # ----------------------------------------------------------------------------
+def enable_repository(repo_name):
+    """Enable the given repository"""
+
+    cmd = 'zypper mr -e ' + repo_name
+    res = os.system(cmd)
+    if res:
+        logging.error('Unable to enable repository %s' % repo_name)
+        
+# ----------------------------------------------------------------------------
 def exec_subprocess(cmd):
     """Execute the given command as a subprocess (blocking)"""
     try:
