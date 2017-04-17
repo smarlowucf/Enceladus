@@ -27,13 +27,15 @@ except ImportError:
     sys.stderr.write('Python setuptools required, please install.')
     sys.exit(1)
 
-
-this_path = os.path.dirname(os.path.abspath(__file__))
-mod_path = this_path + os.sep + 'lib/susepubliccloudinfoclient'
-sys.path.insert(0, mod_path)
-
-import version
-src_version = version.VERSION
+version = {}
+version_path = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    'lib',
+    'susepubliccloudinfoclient',
+    'version.py'
+)
+with open(version_path, 'r') as f:
+    exec(f, version)
 
 description = 'Command-line tool to access SUSE Public Cloud Information '
 description += 'Service'
@@ -46,7 +48,7 @@ if __name__ == '__main__':
         license='GPL-3.0+',
         author='SUSE Public Cloud Team',
         author_email='public-cloud-dev@susecloud.net',
-        version=src_version,
+        version=version['VERSION'],
         packages=setuptools.find_packages('lib'),
         package_dir={
             '': 'lib',
